@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using ProudTech.Domain.Inscricoes;
@@ -51,6 +52,23 @@ namespace ProudTech.Tests.Services.Inscricoes
         }
 
         [Fact]
+        public void RealizarInscricao_GerarException_SeParticipanteJaEstaIncritoFluentAssertions()
+        {
+            Inscricao inscricao = ConstruirInscricao();
+
+            var inscricaoRepositoryMock = new Mock<IInscricaoRepository>();
+            var participanteRepositoryMock = new Mock<IParticipanteRepository>();
+            var trilhaRepositoryMock = new Mock<ITrilhaRepository>();
+            var loggerMock = new Mock<ILogger<InscricaoService>>();
+            inscricaoRepositoryMock.Setup(x => x.ParticipanteInscritoAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+            var inscricaoService = new InscricaoService(loggerMock.Object, inscricaoRepositoryMock.Object, participanteRepositoryMock.Object, trilhaRepositoryMock.Object);
+
+            var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None)).Result;
+            ex.Message.Should().Be("Participante já inscrito no ProudTech");
+        }
+
+        [Fact]
         public void RealizarInscricao_GerarException_SeParticipanteAindaNaoFinalizouCadastro()
         {
             Inscricao inscricao = ConstruirInscricao();
@@ -67,6 +85,7 @@ namespace ProudTech.Tests.Services.Inscricoes
             var inscricaoService = new InscricaoService(loggerMock.Object, inscricaoRepositoryMock.Object, participanteRepositoryMock.Object, trilhaRepositoryMock.Object);
 
             var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None)).Result;
+            ex.Message.Should().Be("Participante ainda não finalizou o cadastro.");
             Assert.Equal("Participante ainda não finalizou o cadastro.", ex.Message);
         }
 
@@ -88,6 +107,7 @@ namespace ProudTech.Tests.Services.Inscricoes
             var inscricaoService = new InscricaoService(loggerMock.Object, inscricaoRepositoryMock.Object, participanteRepositoryMock.Object, trilhaRepositoryMock.Object);
 
             var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None)).Result;
+            ex.Message.Should().Be("Trilha já fechada");
             Assert.Equal("Trilha já fechada", ex.Message);
         }
 
