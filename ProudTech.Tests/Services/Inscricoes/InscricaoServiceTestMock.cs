@@ -25,9 +25,13 @@ namespace ProudTech.Tests.Services.Inscricoes
             var participanteRepositoryMock = new Mock<IParticipanteRepository>();
             var trilhaRepositoryMock = new Mock<ITrilhaRepository>();
             var loggerMock = new Mock<ILogger<InscricaoService>>();
-            participanteRepositoryMock.Setup(x => x.ObterPorIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Participante);
+            participanteRepositoryMock.Setup(x => x.ObterPorIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Participante);
 
-            var inscricaoService = new InscricaoService(loggerMock.Object, inscricaoRepositoryMock.Object, participanteRepositoryMock.Object, trilhaRepositoryMock.Object);
+            var inscricaoService = new InscricaoService(loggerMock.Object, 
+                                                        inscricaoRepositoryMock.Object, 
+                                                        participanteRepositoryMock.Object, 
+                                                        trilhaRepositoryMock.Object);
 
             await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None);
 
@@ -48,7 +52,7 @@ namespace ProudTech.Tests.Services.Inscricoes
             var inscricaoService = new InscricaoService(loggerMock.Object, inscricaoRepositoryMock.Object, participanteRepositoryMock.Object, trilhaRepositoryMock.Object);
 
             var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None)).Result;
-            Assert.Equal("Participante j· inscrito no ProudTech", ex.Message);
+            Assert.Equal("Participante j√° inscrito no ProudTech", ex.Message);
         }
 
         [Fact]
@@ -65,7 +69,7 @@ namespace ProudTech.Tests.Services.Inscricoes
             var inscricaoService = new InscricaoService(loggerMock.Object, inscricaoRepositoryMock.Object, participanteRepositoryMock.Object, trilhaRepositoryMock.Object);
 
             var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None)).Result;
-            ex.Message.Should().Be("Participante j· inscrito no ProudTech");
+            ex.Message.Should().Be("Participante j√° inscrito no ProudTech");
         }
 
         [Fact]
@@ -85,8 +89,8 @@ namespace ProudTech.Tests.Services.Inscricoes
             var inscricaoService = new InscricaoService(loggerMock.Object, inscricaoRepositoryMock.Object, participanteRepositoryMock.Object, trilhaRepositoryMock.Object);
 
             var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None)).Result;
-            ex.Message.Should().Be("Participante ainda n„o finalizou o cadastro.");
-            Assert.Equal("Participante ainda n„o finalizou o cadastro.", ex.Message);
+            ex.Message.Should().Be("Participante ainda n√£o finalizou o cadastro.");
+            Assert.Equal("Participante ainda n√£o finalizou o cadastro.", ex.Message);
         }
 
         [Fact]
@@ -107,8 +111,8 @@ namespace ProudTech.Tests.Services.Inscricoes
             var inscricaoService = new InscricaoService(loggerMock.Object, inscricaoRepositoryMock.Object, participanteRepositoryMock.Object, trilhaRepositoryMock.Object);
 
             var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None)).Result;
-            ex.Message.Should().Be("Trilha j· fechada");
-            Assert.Equal("Trilha j· fechada", ex.Message);
+            ex.Message.Should().Be("Trilha j√° fechada");
+            Assert.Equal("Trilha j√° fechada", ex.Message);
         }
 
         private static Participante ConstruirParticipante()
