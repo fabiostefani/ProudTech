@@ -1,4 +1,5 @@
-# ProudTech
+<div style="text-align:center"><img src="images/ProudTech.png" /></div>
+<br>
 
 Projeto de exemplo utilizado na apresentação do ProudTech
 
