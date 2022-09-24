@@ -9,8 +9,6 @@ namespace ProudTech.Domain.Participantes
         public string Telefone { get; set; }
         public bool CadastroVerificado { get; set; }
 
-        public Guid TrilhaId { get; set; }
-
         public void ValidarCadastroVerificado()
         {
             if (CadastroVerificado) return;

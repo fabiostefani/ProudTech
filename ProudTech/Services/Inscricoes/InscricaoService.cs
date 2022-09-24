@@ -22,22 +22,27 @@ namespace ProudTech.Services.Inscricoes
             this.trilhaRepository = trilhaRepository;
         }
 
-        public async Task RealizarInscricaoAsync(Inscricao inscricao)
+        public async Task RealizarInscricaoAsync(Inscricao inscricao, CancellationToken cancellationToken)
         {
             logger.LogWarning("Inicializando inscricao");
 
-            if (await this.inscricaoRepository.ParticipanteInscritoAsync(inscricao.ParticipanteId))
+            if (await this.inscricaoRepository.ParticipanteInscritoAsync(inscricao.ParticipanteId, cancellationToken))
                 throw new Exception("Participante já inscrito no ProudTech");
 
-            if (await this.trilhaRepository.TrilhaFechadaAsync(inscricao.TrilhaId))
+            if (await this.trilhaRepository.TrilhaFechadaAsync(inscricao.TrilhaId, cancellationToken))
                 throw new Exception("Trilha já fechada");
 
-            Participante participante = await this.participanteRepository.ObterPorIdAsync(inscricao.ParticipanteId);
+            Participante participante = await this.participanteRepository.ObterPorIdAsync(inscricao.ParticipanteId, cancellationToken);
             participante.ValidarCadastroVerificado();
 
-            await this.inscricaoRepository.InserirAsync(inscricao);
+            await this.inscricaoRepository.InserirAsync(inscricao, cancellationToken);
 
             logger.LogWarning("Inscricao finalizada com êxito");
+        }
+
+        public async Task<IEnumerable<Inscricao>> ObterTodosAsync(CancellationToken cancellationToken)
+        {
+            return await this.inscricaoRepository.ObterTodosAsync(cancellationToken);
         }
     }
 }

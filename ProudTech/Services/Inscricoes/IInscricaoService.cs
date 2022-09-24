@@ -4,6 +4,7 @@ namespace ProudTech.Services.Inscricoes
 {
     public interface IInscricaoService
     {
-        Task RealizarInscricaoAsync(Inscricao inscricao);
+        Task RealizarInscricaoAsync(Inscricao inscricao, CancellationToken cancellationToken);
+        Task<IEnumerable<Inscricao>> ObterTodosAsync(CancellationToken cancellationToken);
     }
 }

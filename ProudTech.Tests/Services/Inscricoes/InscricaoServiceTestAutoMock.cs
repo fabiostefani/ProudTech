@@ -13,7 +13,7 @@ namespace ProudTech.Tests.Services.Inscricoes
         private readonly Participante Participante;
         public InscricaoServiceTestAutoMock()
         {
-            AutoMoq = new AutoMocker(MockBehavior.Loose);
+            AutoMoq = new AutoMocker();
             Participante = ConstruirParticipante();
         }
         [Fact]
@@ -24,13 +24,13 @@ namespace ProudTech.Tests.Services.Inscricoes
             var inscricaoRepositoryMock = AutoMoq.GetMock<IInscricaoRepository>();
             var participanteRepositoryMock = AutoMoq.GetMock<IParticipanteRepository>();
 
-            participanteRepositoryMock.Setup(x => x.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync(Participante);
+            participanteRepositoryMock.Setup(x => x.ObterPorIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Participante);
 
             var inscricaoService = AutoMoq.CreateInstance<InscricaoService>();
 
-            await inscricaoService.RealizarInscricaoAsync(inscricao);
+            await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None);
 
-            inscricaoRepositoryMock.Verify(x => x.InserirAsync(It.IsAny<Inscricao>()), Times.Once);
+            inscricaoRepositoryMock.Verify(x => x.InserirAsync(It.IsAny<Inscricao>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -39,11 +39,11 @@ namespace ProudTech.Tests.Services.Inscricoes
             Inscricao inscricao = ConstruirInscricao();
 
             var inscricaoRepositoryMock = AutoMoq.GetMock<IInscricaoRepository>();
-            inscricaoRepositoryMock.Setup(x => x.ParticipanteInscritoAsync(It.IsAny<Guid>())).ReturnsAsync(true);
+            inscricaoRepositoryMock.Setup(x => x.ParticipanteInscritoAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
             var inscricaoService = AutoMoq.CreateInstance<InscricaoService>();
 
-            var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao)).Result;
+            var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None)).Result;
             Assert.Equal("Participante já inscrito no ProudTech", ex.Message);
         }
 
@@ -57,12 +57,12 @@ namespace ProudTech.Tests.Services.Inscricoes
 
             Participante.CadastroVerificado = false;
 
-            inscricaoRepositoryMock.Setup(x => x.ParticipanteInscritoAsync(It.IsAny<Guid>())).ReturnsAsync(false);
-            participanteRepositoryMock.Setup(x => x.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync(Participante);
+            inscricaoRepositoryMock.Setup(x => x.ParticipanteInscritoAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
+            participanteRepositoryMock.Setup(x => x.ObterPorIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Participante);
 
             var inscricaoService = AutoMoq.CreateInstance<InscricaoService>();
 
-            var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao)).Result;
+            var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None)).Result;
             Assert.Equal("Participante ainda não finalizou o cadastro.", ex.Message);
         }
 
@@ -77,13 +77,13 @@ namespace ProudTech.Tests.Services.Inscricoes
 
             Participante.CadastroVerificado = false;
 
-            inscricaoRepositoryMock.Setup(x => x.ParticipanteInscritoAsync(It.IsAny<Guid>())).ReturnsAsync(false);
-            participanteRepositoryMock.Setup(x => x.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync(Participante);
-            trilhaRepositoryMock.Setup(x => x.TrilhaFechadaAsync(It.IsAny<Guid>())).ReturnsAsync(true);
+            inscricaoRepositoryMock.Setup(x => x.ParticipanteInscritoAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
+            participanteRepositoryMock.Setup(x => x.ObterPorIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Participante);
+            trilhaRepositoryMock.Setup(x => x.TrilhaFechadaAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
             var inscricaoService = AutoMoq.CreateInstance<InscricaoService>();
 
-            var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao)).Result;
+            var ex = Assert.ThrowsAsync<Exception>(async () => await inscricaoService.RealizarInscricaoAsync(inscricao, CancellationToken.None)).Result;
             Assert.Equal("Trilha já fechada", ex.Message);
         }
 

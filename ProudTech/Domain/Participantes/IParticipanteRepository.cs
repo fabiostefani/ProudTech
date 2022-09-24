@@ -2,6 +2,8 @@
 {
     public interface IParticipanteRepository
     {
-        Task<Participante> ObterPorIdAsync(Guid participanteId);
+        Task InserirAsync(Participante participante, CancellationToken cancellationToken);
+        Task<IEnumerable<Participante>> ObterTodosAsync(CancellationToken cancellationToken);
+        Task<Participante> ObterPorIdAsync(Guid participanteId, CancellationToken cancellationToken);
     }
 }
