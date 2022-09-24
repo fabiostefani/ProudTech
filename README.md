@@ -2,33 +2,19 @@
 
 Projeto de exemplo utilizado na apresentação do ProudTech
 
+### Para rodar o projeto <br>
 
-
-<div style="text-align:center"><img src="https://i.imgur.com/HM1rUb5.png?1" /></div>
-<br>
-
-Demo de utilização de Memória em Cache em .NET
-
-
-Instalar o pacote para o gerenciamento de Cache
+Deve ser criado o banco de dados da aplicação.
+No terminal, ou outra ferramenta de CLI, executar o comando 
 ```
-dotnet add package Microsoft.Extensions.Caching.Memory
+dotnet ef database update
 ```
 
-Adicionar a injeção de dependência
-```
-builder.Services.AddMemoryCache();
-```
+Lembre-se, você deve ter o DOTNET EF instalado em sua máquina.
 
-Injetar o IMemoryCache no construtor dos objetos que desejo gerenciar.
-
-Chamar os métodos para o gerenciamento.
 
 
 ### Techs utilizadas
  - [**.NET 6**](https://docs.microsoft.com/pt-br/aspnet/core/?WT.mc_id=dotnet-35129-website&view=aspnetcore-6.0)
- - [**FluentValidation.AspNetCore**](https://docs.fluentvalidation.net/en/latest/aspnet.html)
- - [**Microsoft.Extensions.Caching.Memory**](https://docs.microsoft.com/pt-br/dotnet/api/microsoft.extensions.caching.memory.imemorycache?view=dotnet-plat-ext-6.0)
-
- ### Fonte
- - [**Microsoft**](https://docs.microsoft.com/pt-br/aspnet/core/performance/caching/memory?view=aspnetcore-6.0)
+ - [**Moq**](https://github.com/moq/moq4)
+ - [**AutoMoq**](https://github.com/moq/Moq.AutoMocker)
